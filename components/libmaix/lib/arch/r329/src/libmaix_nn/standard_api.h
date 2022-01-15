@@ -67,6 +67,10 @@ typedef struct tensor_desc {
     uint32_t id;
     uint32_t size;
     aipu_tensor_fmt_t fmt;
+
+    //r0p1
+    // float scale;
+    // float zero_point;
 } aipu_tensor_desc_t;
 
 typedef struct buffer {
@@ -189,6 +193,8 @@ typedef struct dump_option {
  *        which has a value of zero. Error statuses are assigned positive integers
  *        and their identifiers start with the AIPU_STATUS_ERROR prefix.
  */
+
+// r0p1 has more one option than this 
 typedef enum {
     AIPU_STATUS_SUCCESS                    = 0x0,
     AIPU_STATUS_ERROR_NULL_PTR             = 0x1,

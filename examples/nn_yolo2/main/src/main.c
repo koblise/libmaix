@@ -244,7 +244,7 @@ void nn_test(struct libmaix_disp* disp)
         .normal.output_num              = 1,              // len(output_names)
         .normal.mean                    = {127.5, 127.5, 127.5},
         .normal.norm                    = {0.0078125, 0.0078125, 0.0078125},
-        .normal.Scale                   = &Scale,
+        .normal.Scale                   = &Scale,    //Only R329 has this option (r0p0 SDK)
     };
 
     // malloc buffer 
