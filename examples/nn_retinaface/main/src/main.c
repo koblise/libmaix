@@ -72,7 +72,7 @@ void nn_test(struct libmaix_disp* disp)
 {
     libmaix_image_t* img = NULL;
     libmaix_image_t *show = libmaix_image_create(disp->width, disp->height, LIBMAIX_IMAGE_MODE_RGB888, LIBMAIX_IMAGE_LAYOUT_HWC, NULL, true);
-    int res_w = 224, res_h = 224;
+    int res_w = 320, res_h = 320;
     int input_w = res_w, input_h = res_h;
     int disp_w = 240, disp_h = 240;
     libmaix_nn_t* nn = NULL;
@@ -106,12 +106,13 @@ void nn_test(struct libmaix_disp* disp)
     };
     libmaix_nn_decoder_retinaface_config_t config = {
         .variance = {0.1, 0.2},
-        .steps = {8, 16, 32},
-        .min_sizes = {16, 32, 64, 128, 256, 512},
+        .steps = {8, 16, 32, 64},
+        .min_sizes = {10, 16, 24, 32, 48, 64, 96, 128, 192, 256},
         .nms = 0.4,
         .score_thresh = 0.5,
         .input_w = input_w,
-        .input_h = input_h
+        .input_h = input_h,
+        .channel_num = 5875
     };
     libmaix_nn_layer_t input = {
         .w = input_w,
@@ -159,17 +160,30 @@ void nn_test(struct libmaix_disp* disp)
     };
     char* inputs_names[] = {"input0"};
     char* outputs_names[] = {"output0", "output1", "output2"};
+    // libmaix_nn_opt_param_t opt_param = {
+    //     .awnn.input_names             = inputs_names,
+    //     .awnn.output_names            = outputs_names,
+    //     // .awnn.input_ids               = NULL,
+    //     // .awnn.output_ids              = NULL,
+    //     .awnn.encrypt                 = false,
+    //     .awnn.input_num               = 1,              // len(input_names)
+    //     .awnn.output_num              = 3,              // len(output_names)
+    //     .awnn.mean                    = {127.5, 127.5, 127.5},
+    //     .awnn.norm                    = {0.0078125, 0.0078125, 0.0078125},
+    // };
+
+    float Scale[] = {59.1571 , 27.328325 , 24.65261};
     libmaix_nn_opt_param_t opt_param = {
-        .awnn.input_names             = inputs_names,
-        .awnn.output_names            = outputs_names,
-        // .awnn.input_ids               = NULL,
-        // .awnn.output_ids              = NULL,
-        .awnn.encrypt                 = false,
-        .awnn.input_num               = 1,              // len(input_names)
-        .awnn.output_num              = 3,              // len(output_names)
-        .awnn.mean                    = {127.5, 127.5, 127.5},
-        .awnn.norm                    = {0.0078125, 0.0078125, 0.0078125},
+        .normal.input_names             = inputs_names,
+        .normal.output_names            = outputs_names,
+        .normal.input_num               = 1,              // len(input_names)
+        .normal.output_num              = 3,              // len(output_names)
+        .normal.mean                    = {127.5, 127.5, 127.5},
+        .normal.norm                    = {0.0078125, 0.0078125, 0.0078125},
+        .normal.Scale                   = &Scale,    //Only R329 has this option (r0p0 SDK)
     };
+
+
     float* output_buffer = (float*)malloc(out_fmap[0].c * out_fmap[0].w * out_fmap[0].h * sizeof(float));
     if(!output_buffer)
     {
@@ -285,10 +299,10 @@ void nn_test(struct libmaix_disp* disp)
         {
             if(result.faces[i].score > config.score_thresh)
             {
-                show->draw_rectangle(img_disp, result.faces[i].box.x * img_disp->width, result.faces[i].box.y * img_disp->height, result.faces[i].box.w * img_disp->width, result.faces[i].box.h * img_disp->height, color, false, 3);
+                show->draw_rectangle(img, result.faces[i].box.x * img->width, result.faces[i].box.y * img->height, result.faces[i].box.w * img->width, result.faces[i].box.h * img->height, color, false, 3);
                 for(int j=0; j<5; ++j)
                 {
-                    img_disp->draw_rectangle(img_disp, result.faces[i].points[j * 2] * img_disp->width, result.faces[i].points[j * 2 + 1] * img_disp->height, 2, 2, color, false, 2);
+                    img->draw_rectangle(img, result.faces[i].points[j * 2] * img->width, result.faces[i].points[j * 2 + 1] * img->height, 2, 2, color, false, 2);
                 }
             }
         }
