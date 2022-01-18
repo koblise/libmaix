@@ -13,13 +13,15 @@
 extern "C"
 {
 #endif
-
+#include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "libmaix_err.h"
 #include "libmaix_nn_decoder.h"
 
-#define ANCHOR_SIZE_NUM 3
+#define ANCHOR_SIZE_NUM 4
+#define MIN_SIZE_LEN 10
+#define STEP_LEN 4
 
 typedef struct
 {

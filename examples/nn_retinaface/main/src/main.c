@@ -112,7 +112,6 @@ void nn_test(struct libmaix_disp* disp)
         .score_thresh = 0.5,
         .input_w = input_w,
         .input_h = input_h,
-        .channel_num = 5875
     };
     libmaix_nn_layer_t input = {
         .w = input_w,

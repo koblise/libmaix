@@ -109,12 +109,30 @@ retinaface_box_t* retinaface_get_priorboxes(libmaix_nn_decoder_retinaface_config
     int anchors_size[ANCHOR_SIZE_NUM * 2];
     int anchor_num = 0;
     int count = 0;
-    for(int i=0; i < ANCHOR_SIZE_NUM; ++i)
+    
+
+    if(ANCHOR_SIZE_NUM * 2 != MIN_SIZE_LEN)
     {
-        anchors_size[i * 2] = ceil(config->input_h * 1.0 / config->steps[i]);
-        anchors_size[i * 2 + 1] = ceil(config->input_w * 1.0 / config->steps[i]);
-        anchor_num += anchors_size[i * 2] * anchors_size[i * 2 + 1] * 2;
+        int step_of_min_sizes [] = {3,2,2,3};
+        for(int i = 0 ; i<ANCHOR_SIZE_NUM; i++)
+        {
+            anchors_size[i * 2] = ceil(config->input_h * 1.0 / config->steps[i]);
+            anchors_size[i * 2 + 1] = ceil(config->input_w * 1.0 / config->steps[i]);
+            anchor_num += anchors_size[i * 2] * anchors_size[i * 2 + 1] * step_of_min_sizes[i];
+
+        }
     }
+
+    else{
+        int step_of_min_sizes [] = {2,2,2,2};
+        for(int i=0; i < ANCHOR_SIZE_NUM; ++i)
+        {
+            anchors_size[i * 2] = ceil(config->input_h * 1.0 / config->steps[i]);
+            anchors_size[i * 2 + 1] = ceil(config->input_w * 1.0 / config->steps[i]);
+            anchor_num += anchors_size[i * 2] * anchors_size[i * 2 + 1] * 2;
+        }
+    }
+
     *boxes_num = anchor_num;
     retinaface_box_t* boxes = (retinaface_box_t*)malloc(sizeof(retinaface_box_t) * anchor_num);
     if(!boxes)
@@ -122,24 +140,56 @@ retinaface_box_t* retinaface_get_priorboxes(libmaix_nn_decoder_retinaface_config
         printf("malloc fail\n");
         return NULL;
     }
-    for(int i=0; i < ANCHOR_SIZE_NUM; ++i)
+
+    if(ANCHOR_SIZE_NUM *2 != MIN_SIZE_LEN)
     {
-        for(int j=0; j < anchors_size[i * 2]; ++j)
+        int index = 0;
+        int step_of_min_sizes [] = {3,2,2,3};
+        for(int i=0; i < ANCHOR_SIZE_NUM; ++i)
         {
-            for(int k=0; k < anchors_size[i * 2 + 1]; ++k)
+            for(int j=0; j < anchors_size[i * 2]; ++j)
             {
-                for(int m=0; m < 2; ++m)
+                for(int k=0; k < anchors_size[i * 2 + 1]; ++k)
                 {
-                    int min_size = config->min_sizes[i * 2 + m];
-                    boxes[count].x = (k + 0.5) * config->steps[i] / config->input_w;
-                    boxes[count].y = (j + 0.5) * config->steps[i] / config->input_h;
-                    boxes[count].w = min_size * 1.0 / config->input_w; 
-                    boxes[count].h = min_size * 1.0 / config->input_h;
-                    ++count;
+                    int end = index + step_of_min_sizes[i];
+                    for(index; index < end ; index++)
+                    {
+                        int min_size = config->min_sizes[index];
+                        boxes[count].x = (k + 0.5) * config->steps[i] / config->input_w;
+                        boxes[count].y = (j + 0.5) * config->steps[i] / config->input_h;
+                        boxes[count].w = min_size * 1.0 / config->input_w; 
+                        boxes[count].h = min_size * 1.0 / config->input_h;
+                        ++count;
+                    }
+                }
+            }
+            index += step_of_min_sizes[i];
+        }
+    }
+    else
+    {
+        for(int i=0; i < ANCHOR_SIZE_NUM; ++i)
+        {
+            for(int j=0; j < anchors_size[i * 2]; ++j)
+            {
+                for(int k=0; k < anchors_size[i * 2 + 1]; ++k)
+                {
+                    for(int m=0; m < 2; ++m)
+                    {
+                        int min_size = config->min_sizes[i * 2 + m];
+                        boxes[count].x = (k + 0.5) * config->steps[i] / config->input_w;
+                        boxes[count].y = (j + 0.5) * config->steps[i] / config->input_h;
+                        boxes[count].w = min_size * 1.0 / config->input_w; 
+                        boxes[count].h = min_size * 1.0 / config->input_h;
+                        ++count;
+                    }
                 }
             }
         }
     }
+
+
+
     return boxes;
 }
 

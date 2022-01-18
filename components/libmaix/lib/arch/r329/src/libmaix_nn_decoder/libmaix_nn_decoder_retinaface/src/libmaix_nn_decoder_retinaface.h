@@ -19,8 +19,8 @@ extern "C"
 #include "libmaix_err.h"
 #include "libmaix_nn_decoder.h"
 
-#define ANCHOR_SIZE_NUM 3
-
+#define ANCHOR_SIZE_NUM 4
+#define MIN_SIZE_LEN 10
 typedef struct
 {
     float x;
@@ -43,7 +43,7 @@ typedef struct
 {
     float variance[2];
     int steps[ANCHOR_SIZE_NUM];
-    int min_sizes[ANCHOR_SIZE_NUM * 2];
+    int min_sizes[MIN_SIZE_LEN];
 
     float nms;
     float score_thresh;
