@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.5)
 # message(STATUS "cmake_source_dir ->" ${CMAKE_SOURCE_DIR})
 # message(STATUS "project_source_dir ->"  ${PROJECT_SOURCE_DIR})
 # message(STATUS "executable_output_dir - > "${EXECUTABLE_OUTPUT_PATH})
-# message(STATUS "current_source_path ->."${CMAKE_CURRENT_SOURCE_DIR}) 
+# message(STATUS "current_source_path ->."${CMAKE_CURRENT_SOURCE_DIR})
 # message("_____________________________________________________________")
 
 
@@ -17,9 +17,9 @@ link_directories("./lib/")
 link_directories("../../../r329/")
 
 add_library(maix_nn_decoder SHARED # STATIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../libmaix/src/decoder/decoder_retinaface.c
         src/libmaix_nn_decoder.c
         libmaix_nn_decoder_yolo2/src/libmaix_nn_decoder_yolo2.c
-        libmaix_nn_decoder_retinaface/src/libmaix_nn_decoder_retinaface.c
 )
 
 set(export_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../libmaix)

@@ -126,7 +126,7 @@ if(CONFIG_LIBMAIX_ENABLED)
           "lib/arch/r329/libmaix_nn_app.so"
 
       )
-      set(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} -fuse-ld=gold -Wl,--start-group libmaix/liblibmaix.a -Wl,--end-group" PARENT_SCOPE)
+      set(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} -fuse-ld=gold -Wl,--start-group libmaix/liblibmaix.a -lm -Wl,--end-group" PARENT_SCOPE)
 
     else()
 

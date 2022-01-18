@@ -34,15 +34,15 @@ typedef struct
 
 
 /**
- * 
+ *
  * befor call it, ensure rl->config is set
- * 
+ *
  */
 static libmaix_err_t region_layer_init(region_layer_t *rl)
 {
     libmaix_err_t flag = LIBMAIX_ERR_NONE;
 
-    rl->coords = 4;       // x y h w 
+    rl->coords = 4;       // x y h w
     rl->net_out_wh = rl->config->net_out_width * rl->config->net_out_height;
     rl->boxes_number = (rl->net_out_wh * rl->config->anchors_num);
     rl->one_box_output_number = (rl->config->classes_num + rl->coords + 1);   //40
@@ -102,8 +102,8 @@ static libmaix_err_t region_layer_init(region_layer_t *rl)
     {
 	    rl->probs[i] = &(rl->probs_buf[i * (rl->config->classes_num + 1)]);
     }
-	
-	
+
+
     return LIBMAIX_ERR_NONE;
 malloc_error:
     //free(rl->output);
@@ -173,9 +173,9 @@ static void softmax(float *data, int n, int stride)
 	}
 }
 
-    
+
 static void softmax_cpu(float *data, int n, int batch, int batch_offset, int groups, int groups_dis)
-{        
+{
     int g, b;
 
     for (b = 0; b < batch; ++b)
@@ -187,7 +187,7 @@ static void softmax_cpu(float *data, int n, int batch, int batch_offset, int gro
 
 /**
  * x,y,p_detect sigmod, and p_classes softmax
- * 
+ *
  */
 static void forward_region_layer(region_layer_t *rl)
 {
@@ -199,7 +199,7 @@ static void forward_region_layer(region_layer_t *rl)
     //    rl->output[index] = rl->input[index] * rl->scale + rl->bias;
     for (int n = 0; n < rl->config->anchors_num; ++n)
     {
-        ch_offset_x = n * rl->one_box_output_number;  
+        ch_offset_x = n * rl->one_box_output_number;
         ch_offset_y = ch_offset_x + 1;
         ch_offset_pd = ch_offset_x + rl->coords;
         for(int i = 0; i < rl->net_out_wh; ++i) // each cell of OutPut Map
@@ -286,7 +286,7 @@ static void get_region_boxes(region_layer_t *rl, float *predictions, float **pro
             for (int j = 0; j < classes; ++j)
                 probs[index][j] = 0;
             int box_ch_offset = rl->one_ch_output_number * i + rl->one_box_output_number * n;
-            int obj_ch_offset = box_ch_offset + coords; 
+            int obj_ch_offset = box_ch_offset + coords;
             float max = 0;
             float p_classes_sum = 0;
 
@@ -506,7 +506,7 @@ void libmaix_nn_decoder_yolo2_draw_result(struct libmaix_nn_decoder* obj, libmai
 libmaix_nn_decoder_t* libmaix_nn_decoder_yolo2_create()
 {
     LIBMAIX_DEBUG_PRINTF("--[func]: libmaix_nn_decoder_yolo2_create\n");
-    libmaix_nn_decoder_t* obj = libmaix_nn_decoder_create(libmaix_nn_decoder_yolo2_init,
+    libmaix_nn_decoder_t* obj = libmaix_nn_decoder_creat(libmaix_nn_decoder_yolo2_init,
                             libmaix_nn_decoder_yolo2_deinit,
                             libmaix_nn_decoder_yolo2_decode);
     return obj;
