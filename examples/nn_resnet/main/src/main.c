@@ -114,7 +114,7 @@ void nn_test(struct libmaix_disp *disp)
     libmaix_nn_model_path_t model_path = {
         // .awnn.param_path = "./resnet18_1000_awnn.param",
         // .awnn.bin_path = "./resnet18_1000_awnn.bin"
-        .normal.model_path = "./resnet.bin"
+        .normal.model_path = "/root/models/aipu_resnet50.bin"
     };
     libmaix_nn_layer_t input = {
         .w = 224,
@@ -141,6 +141,7 @@ void nn_test(struct libmaix_disp *disp)
         .normal.output_num = 1, // len(output_names)
         .normal.mean = {127.5, 127.5, 127.5},
         .normal.norm = {0.00784313725490196, 0.00784313725490196, 0.00784313725490196},
+        .normal.scale  = {7.5395403},
     };
 
 
@@ -228,18 +229,18 @@ void nn_test(struct libmaix_disp *disp)
         printf("____________\n")
         CALC_TIME_END("maix nn forward");
 
-        // CALC_TIME_START();
-        // // printf("--convert test end\n");
-        // // libmaix_image_color_t color ={
-        // //     .rgb888.r = 255,
-        // //     .rgb888.g = 0,
-        // //     .rgb888.b = 0
-        // // };
-        // // char temp_str[100];
-        // // snprintf(temp_str, 100, "%f, %s", max_p, labels[max_idx]);
-        // // rgb_img->draw_string(rgb_img, temp_str, 4, 4, 16, color, NULL);
-        // // disp->draw(disp, rgb_img->data);
-        // // CALC_TIME_END("display");
+        CALC_TIME_START();
+        // printf("--convert test end\n");
+        // libmaix_image_color_t color ={
+        //     .rgb888.r = 255,
+        //     .rgb888.g = 0,
+        //     .rgb888.b = 0
+        // };
+        // char temp_str[100];
+        // snprintf(temp_str, 100, "%f, %s", max_p, labels[max_idx]);
+        // rgb_img->draw_string(rgb_img, temp_str, 4, 4, 16, color, NULL);
+        // disp->draw(disp, rgb_img->data);
+        // CALC_TIME_END("display");
     }
 
 end:
@@ -258,11 +259,11 @@ end:
         printf("--cam destory\n");
         libmaix_cam_destroy(&cam);
     }
-    if(img)
-    {
-        printf("--image destory\n");
-        libmaix_image_destroy(&img);
-    }
+    // if(img)
+    // {
+    //     printf("--image destory\n");
+    //     libmaix_image_destroy(&img);
+    // }
     if (show)
     {
         printf("-- caputer destory\n");

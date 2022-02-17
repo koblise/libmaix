@@ -1,6 +1,6 @@
-/**
+/*
  * maix neural network lib
- *
+ * 
  * @copyright © 2020-2021 Sipeed Ltd, All rights reserved
  * @author neucrack
  * @update --2020.12.28--neucrack: create lib
@@ -17,6 +17,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+int Debug_s;
+
 
 typedef enum
 {
@@ -85,8 +88,8 @@ typedef union
         float    norm[3];
         int*     input_ids;
         int*     output_ids;
+        float    scale[5] ;
         bool encrypt;
-        float * Scale;
     }normal;
 }libmaix_nn_opt_param_t; // optional param for model
 

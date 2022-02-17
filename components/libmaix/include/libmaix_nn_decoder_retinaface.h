@@ -13,7 +13,7 @@
 extern "C"
 {
 #endif
-#include <math.h>
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "libmaix_err.h"
@@ -21,8 +21,6 @@ extern "C"
 
 #define ANCHOR_SIZE_NUM 4
 #define MIN_SIZE_LEN 10
-#define STEP_LEN 4
-
 typedef struct
 {
     float x;
@@ -45,7 +43,7 @@ typedef struct
 {
     float variance[2];
     int steps[ANCHOR_SIZE_NUM];
-    int min_sizes[ANCHOR_SIZE_NUM * 2];
+    int min_sizes[MIN_SIZE_LEN];
 
     float nms;
     float score_thresh;

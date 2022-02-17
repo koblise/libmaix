@@ -159,9 +159,10 @@ int V4L2Capture::initDevice()
     V4L2_PRINTF("Can't set cropcap para\n");
   }
 
-  int tmpW = capW, tmpH = capH; // dls patch 2021-12-30
-  if (tmpW > 320) tmpW = 640, tmpH = 480;
-  if (tmpW > 640) tmpW = 1280, tmpH = 720;
+  int tmpW = capW, tmpH = capH; // dls patch 2021-12-30\
+  // 320 * 240
+  if (tmpW >= 320) tmpW = 640, tmpH = 480;
+  if (tmpW >= 640) tmpW = 1280, tmpH = 720;
 
   /* 使用IOCTL命令VIDIOC_S_FMT，设置摄像头帧信息*/
   cam_format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;

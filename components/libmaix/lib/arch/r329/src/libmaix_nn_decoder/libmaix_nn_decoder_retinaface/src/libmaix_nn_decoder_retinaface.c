@@ -119,7 +119,6 @@ retinaface_box_t* retinaface_get_priorboxes(libmaix_nn_decoder_retinaface_config
             anchors_size[i * 2] = ceil(config->input_h * 1.0 / config->steps[i]);
             anchors_size[i * 2 + 1] = ceil(config->input_w * 1.0 / config->steps[i]);
             anchor_num += anchors_size[i * 2] * anchors_size[i * 2 + 1] * step_of_min_sizes[i];
-
         }
     }
 
@@ -187,8 +186,6 @@ retinaface_box_t* retinaface_get_priorboxes(libmaix_nn_decoder_retinaface_config
             }
         }
     }
-
-
 
     return boxes;
 }

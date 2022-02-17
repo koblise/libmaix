@@ -31,40 +31,40 @@ static volatile bool program_exit = false;
 
 int loadFromBin(const char* binPath, int size, signed char* buffer)
 {
-	FILE* fp = fopen(binPath, "rb");
-	if (fp == NULL)
-	{
-		fprintf(stderr, "fopen %s failed\n", binPath);
-		return -1;
-	}
-	int nread = fread(buffer, 1, size, fp);
-	if (nread != size)
-	{
-		fprintf(stderr, "fread bin failed %d\n", nread);
-		return -1;
-	}
-	fclose(fp);
+    FILE* fp = fopen(binPath, "rb");
+    if (fp == NULL)
+    {
+        fprintf(stderr, "fopen %s failed\n", binPath);
+        return -1;
+    }
+    int nread = fread(buffer, 1, size, fp);
+    if (nread != size)
+    {
+        fprintf(stderr, "fread bin failed %d\n", nread);
+        return -1;
+    }
+    fclose(fp);
 
-	return 0;
+    return 0;
 }
 
 int save_bin(const char* path, int size, uint8_t* buffer)
 {
     FILE* fp = fopen(path, "wb");
-	if (fp == NULL)
-	{
-		fprintf(stderr, "fopen %s failed\n", path);
-		return -1;
-	}
-	int nwrite = fwrite(buffer, 1, size, fp);
-	if (nwrite != size)
-	{
-		fprintf(stderr, "fwrite bin failed %d\n", nwrite);
-		return -1;
-	}
-	fclose(fp);
+    if (fp == NULL)
+    {
+        fprintf(stderr, "fopen %s failed\n", path);
+        return -1;
+    }
+    int nwrite = fwrite(buffer, 1, size, fp);
+    if (nwrite != size)
+    {
+        fprintf(stderr, "fwrite bin failed %d\n", nwrite);
+        return -1;
+    }
+    fclose(fp);
 
-	return 0;
+    return 0;
 }
 
 
@@ -86,7 +86,7 @@ void nn_test(struct libmaix_disp* disp)
     libmaix_nn_module_init();
     libmaix_camera_module_init();
     printf("--cam create\n");
-    libmaix_cam_t* cam = libmaix_cam_create(0, res_w, res_h, 1, 0);
+    libmaix_cam_t* cam = libmaix_cam_create(0, 320, 320, 1, 0);
     if(!cam)
     {
         printf("create cam fail\n");
@@ -101,14 +101,15 @@ void nn_test(struct libmaix_disp* disp)
 
     printf("--init\n");
     libmaix_nn_model_path_t model_path = {
-        .awnn.param_path = "/home/model/face_recognize/model_int8.param",
-        .awnn.bin_path = "/home/model/face_recognize/model_int8.bin",
+        // .awnn.param_path = "/home/model/face_recognize/model_int8.param",
+        // .awnn.bin_path = "/home/model/face_recognize/model_int8.bin",
+        .normal.model_path = "/root/models/aipu_Retinaface_320.bin"
     };
     libmaix_nn_decoder_retinaface_config_t config = {
         .variance = {0.1, 0.2},
         .steps = {8, 16, 32, 64},
         .min_sizes = {10, 16, 24, 32, 48, 64, 96, 128, 192, 256},
-        .nms = 0.4,
+        .nms = 0.5,
         .score_thresh = 0.5,
         .input_w = input_w,
         .input_h = input_h,
@@ -171,15 +172,15 @@ void nn_test(struct libmaix_disp* disp)
     //     .awnn.norm                    = {0.0078125, 0.0078125, 0.0078125},
     // };
 
-    float Scale[] = {59.1571 , 27.328325 , 24.65261};
+    float Scale[] = {32.752407 , 29.865177 , 14.620169};
     libmaix_nn_opt_param_t opt_param = {
         .normal.input_names             = inputs_names,
         .normal.output_names            = outputs_names,
         .normal.input_num               = 1,              // len(input_names)
         .normal.output_num              = 3,              // len(output_names)
-        .normal.mean                    = {127.5, 127.5, 127.5},
-        .normal.norm                    = {0.0078125, 0.0078125, 0.0078125},
-        .normal.Scale                   = &Scale,    //Only R329 has this option (r0p0 SDK)
+        .normal.mean                    = {104, 117, 123},
+        .normal.norm                    = {1, 1, 1},
+        .normal.scale                   = {32.752407 , 29.865177 , 14.620169},    //Only R329 has this option (r0p0 SDK)
     };
 
 
@@ -204,6 +205,7 @@ void nn_test(struct libmaix_disp* disp)
         goto end;
     }
     out_fmap[2].data = output_buffer3;
+    
     int8_t* quantize_buffer = (int8_t*)malloc(input.w * input.h * input.c);
     if(!quantize_buffer)
     {
@@ -256,15 +258,9 @@ void nn_test(struct libmaix_disp* disp)
             }
         }
 #endif
-        printf("-- nn object forward model\n");
+        // printf("-- nn object forward model\n");
         input.data = (uint8_t *)img->data;
-        // input.data = quantize_buffer;
-        // for(int i=0; i < 448 * 448; ++i)
-        // {
-        //     quantize_buffer[i * 3]     = (int) (((uint8_t*)rgb_img->data)[i * 3])     - 128;
-        //     quantize_buffer[i * 3 + 1] = (int) (((uint8_t*)rgb_img->data)[i * 3 + 1]) - 128;
-        //     quantize_buffer[i * 3 + 2] = (int) (((uint8_t*)rgb_img->data)[i * 3 + 2]) - 128;
-        // }
+
         CALC_TIME_START();
         err = nn->forward(nn, &input, out_fmap);
         CALC_TIME_END("forward");
@@ -273,20 +269,27 @@ void nn_test(struct libmaix_disp* disp)
             printf("libmaix_nn forward fail: %s\n", libmaix_get_err_msg(err));
             goto end;
         }
-        printf("-- nn object forward model complete\n");
+
+        // checkout 
+
+        
+        // printf("-- nn object forward model complete\n");
+
 #if SAVE_NETOUT
+
         save_bin("loc.bin", out_fmap[0].w * out_fmap[0].h * out_fmap[0].c * sizeof(float), out_fmap[0].data);
         save_bin("conf.bin", out_fmap[1].w * out_fmap[1].h * out_fmap[1].c * sizeof(float), out_fmap[1].data);
         save_bin("landmark.bin", out_fmap[2].w * out_fmap[2].h * out_fmap[2].c * sizeof(float), out_fmap[2].data);
+
 #endif
 
-        printf("-- now decode net out\n");
+        // printf("-- now decode net out\n");
         CALC_TIME_START();
         decoder->decode(decoder,out_fmap, &result);
         CALC_TIME_END("decode face info");
         printf("valid box num: %d\n", result.num);
 
-        printf("-- decode complete\n");
+        // printf("-- decode complete\n");
         libmaix_image_color_t color = {
             .rgb888.r = 255,
             .rgb888.g = 0,
@@ -298,16 +301,30 @@ void nn_test(struct libmaix_disp* disp)
         {
             if(result.faces[i].score > config.score_thresh)
             {
-                show->draw_rectangle(img, result.faces[i].box.x * img->width, result.faces[i].box.y * img->height, result.faces[i].box.w * img->width, result.faces[i].box.h * img->height, color, false, 3);
-                for(int j=0; j<5; ++j)
-                {
-                    img->draw_rectangle(img, result.faces[i].points[j * 2] * img->width, result.faces[i].points[j * 2 + 1] * img->height, 2, 2, color, false, 2);
-                }
+                int x1 = result.faces[i].box.x * img->width;
+                int y1 = result.faces[i].box.y * img->height;
+                int x2 = x1 + result.faces[i].box.w * img->width;
+                int y2 = y1 + result.faces[i].box.h * img->height;
+                
+                libmaix_cv_image_draw_rectangle(img, x1, y1, x2, y2, MaixColor(255,0,0),2);
+
+                // printf("x1:%d , x2;%d \n",x1,y1);
+
+                // for(int j=0; j<5; ++j)
+                // {
+                //     int x = result.faces[i].points[j * 2] * img->width;
+                //     int y = result.faces[i].points[j * 2 + 1] * img->height;
+                //     libmaix_cv_image_draw_rectangle(img,x-5,y-5,x+5,y+5,MaixColor(0,255,23) , -1);
+                //     printf("x:%d , y:%d\n ",x,y);
+                
+                // }
             }
         }
+
+
         err = libmaix_cv_image_resize(img, disp->width, disp->height, &show);
-        disp->draw(disp, show);
-        printf("-- draw complete\n");
+        disp->draw_image(disp, show);
+        break;
 #if LOAD_IMAGE
         break;
 #endif
@@ -329,13 +346,17 @@ end:
     {
         libmaix_nn_destroy(&nn);
     }
-    if(img)
-    {
-        printf("--image destory\n");
-        libmaix_image_destroy(&img);
-    }
+    // if(img)
+    // {
+    //     printf("--image destory\n");
+    //     libmaix_image_destroy(&img);
+    // }
     if(cam)
-        libmaix_cam_destroy(&cam);
+    {
+         printf("--cam destory\n");
+         libmaix_cam_destroy(&cam);
+    }
+        
     if(decoder)
     {
         decoder->deinit(decoder);
@@ -374,4 +395,3 @@ int main(int argc, char* argv[])
     libmaix_disp_destroy(&disp);
     return 0;
 }
-
