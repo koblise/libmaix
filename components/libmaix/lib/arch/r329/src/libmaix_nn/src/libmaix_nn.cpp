@@ -357,7 +357,6 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
                 (*prediction) [i] = data[i] /scale;
  
             }
-            
         }
         else
         {

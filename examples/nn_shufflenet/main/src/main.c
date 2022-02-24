@@ -139,7 +139,7 @@ void nn_test(struct libmaix_disp *disp)
         .normal.output_names = outputs_names,
         .normal.input_num = 1,  // len(input_names)
         .normal.output_num = 1, // len(output_names)
-        .normal.mean = {127.5, 127.5, 127.5},
+        .normal.mean = {127, 127, 127},
         .normal.norm = {0.00784313725490196, 0.00784313725490196, 0.00784313725490196},
     };
 

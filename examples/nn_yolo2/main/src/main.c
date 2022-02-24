@@ -131,13 +131,6 @@ void nn_test(struct libmaix_disp* disp)
     // float anchors[10] = {0.4165, 0.693 , 0.9765, 1.6065, 1.5855, 3.122 , 2.821 , 1.8515,3.612 , 3.7275};
 
 
-    // char* labels[] = {"aeroplane","bicycle","bird","boat","bottle","bus","car","cat","chair","cow","diningtable","dog","horse","motorbike","person","pottedplant","sheep","sofa","train","tvmonitor"};
-    // int class_num = 20;
-    // float anchors[10] = {0.4165, 0.693 , 0.9765, 1.6065, 1.5855, 3.122 , 2.821 , 1.8515,3.612 , 3.7275};
-
-
-
-
     uint8_t anchor_len = sizeof(anchors) / sizeof(float) / 2; //five anchors
 
     libmaix_nn_decoder_yolo2_config_t yolo2_config = {
@@ -168,7 +161,7 @@ void nn_test(struct libmaix_disp* disp)
             }while(0)
 #else
     #define CALC_TIME_START() 
-    #define CALC_TIME_END(name)
+    #define CALC_TIME_END(name) 
 #endif
 
     printf("--nn module init\n");
@@ -216,7 +209,7 @@ void nn_test(struct libmaix_disp* disp)
     printf("--yolo init\n");
     libmaix_nn_model_path_t model_path = {
         // .normal.model_path = "./model/aipu_yolo_VOC2007.bin",
-        .normal.model_path = "./model/aipu_onnx_cards_224_35.bin",
+        .normal.model_path = "/root/models/aipu_onnx_cards_224_35.bin",
     };
     libmaix_nn_layer_t input = {
         .w = yolo2_config.net_in_width,
@@ -236,15 +229,15 @@ void nn_test(struct libmaix_disp* disp)
     };
     char* inputs_names[] = {"input0"};
     char* outputs_names[] = {"output0"};
-    float Scale[] = {10.872787};
+    // float Scale[] = {10.872787};
     libmaix_nn_opt_param_t opt_param = {
         .normal.input_names             = inputs_names,
         .normal.output_names            = outputs_names,
         .normal.input_num               = 1,              // len(input_names)
         .normal.output_num              = 1,              // len(output_names)
-        .normal.mean                    = {127.5, 127.5, 127.5},
+        .normal.mean                    = {127, 127, 127},
         .normal.norm                    = {0.0078125, 0.0078125, 0.0078125},
-        .normal.Scale                   = &Scale,    //Only R329 has this option (r0p0 SDK)
+        .normal.scale                   = {10.872787},    //Only R329 has this option (r0p0 SDK)
     };
 
     // malloc buffer 
