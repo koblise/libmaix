@@ -394,11 +394,9 @@ void nn_test(struct libmaix_disp* disp)
             if(result.faces[i].score > config.score_thresh)
             {
                 int x1 = result.faces[i].box.x * show->width;
-                int y1 = result.faces[i].box.y * show->height;
-                int x2 = x1 + result.faces[i].box.w * show->width;
-                int y2 = y1 + result.faces[i].box.h * show->height;
-                
-                libmaix_cv_image_draw_rectangle(show, x1, y1, x2, y2, MaixColor(255,0,0),2);
+    //     printf("--image destory\n");
+    //     libmaix_image_destroy(&img);
+    // }
 
                 printf("x1:%d , x2;%d \n",x1,y1);
 

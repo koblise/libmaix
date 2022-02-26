@@ -217,7 +217,7 @@ retinaface_box_t* retinaface_get_priorboxes(libmaix_nn_decoder_retinaface_config
         
     }
 
-    printf("获得预选框\n");
+    // printf("获得预选框\n");
     return boxes;
 }
 

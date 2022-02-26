@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-
+#define debug_line printf("%s:%d %s %s %s \r\n", __FILE__, __LINE__, __FUNCTION__, __DATE__, __TIME__)
 
 
 static float overlap(float x1, float w1, float x2, float w2)
@@ -216,8 +216,6 @@ retinaface_box_t* retinaface_get_priorboxes(libmaix_nn_decoder_retinaface_config
         }
         
     }
-
-    printf("获得预选框\n");
     return boxes;
 }
 
@@ -353,8 +351,9 @@ libmaix_err_t retinaface_decode(float* net_out_loc, float* net_out_conf, float* 
     }
     /* 4. nms, remove boxes */
     // CALC_TIME_START();
-    printf("now nms is %f\n",config->nms);
+    // debug_line;
     do_nms_sort(*boxes_num, config->nms, config->score_thresh, faces);
+    // debug_line;
     // CALC_TIME_END("do nms");
 
     return LIBMAIX_ERR_NONE;
@@ -421,8 +420,7 @@ libmaix_err_t libmaix_nn_decoder_retinaface_decode(struct libmaix_nn_decoder* ob
     }
     result_obj->faces = params->faces;
     int valid_boxes = params->boxes_num;
-    // printf("[libmaix_decoder valid_boxes] valid_boxed :%d \n",valid_boxes);
-    
+
     libmaix_err_t err = retinaface_decode((float*)feature_map[0].data, (float*)feature_map[1].data, (float*)feature_map[2].data,
                         params->priors,
                         result_obj->faces, &valid_boxes, feature_map[0].layout == LIBMAIX_NN_LAYOUT_CHW, params->config);

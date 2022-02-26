@@ -68,10 +68,10 @@ typedef union
 {
     struct
     {
-        char**   input_names;
-        char**   output_names;
         uint8_t  input_num;               // len(input_names)
         uint8_t  output_num;              // len(output_names)
+        char**   input_names;
+        char**   output_names;
         float    mean[3];
         float    norm[3];
         int*     input_ids;
@@ -80,10 +80,10 @@ typedef union
     }awnn;
         struct
     {
-        char**   input_names;
-        char**   output_names;
         uint8_t  input_num;               // len(input_names)
         uint8_t  output_num;              // len(output_names)
+        char**   input_names;
+        char**   output_names;
         float    mean[3];
         float    norm[3];
         int*     input_ids;

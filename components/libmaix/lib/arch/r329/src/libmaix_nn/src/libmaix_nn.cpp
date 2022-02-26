@@ -109,7 +109,8 @@ libmaix_err_t libmaix_nn_obj_load(struct libmaix_nn *obj, const libmaix_nn_model
     // aipu_ctx_handle_t *ctx  = ((obj_config_t *)(obj->_config))->ctx;
     // const char *status_msg =  ((obj_config_t *)(obj->_config))->status_msg;
     ((obj_config_t *)(obj->_config))->opt = opt_param;
-    
+    ((obj_config_t *)(obj->_config))->opt = (libmaix_nn_opt_param_t *) malloc( sizeof(libmaix_nn_opt_param_t));
+    *((obj_config_t *)(obj->_config))->opt   = * opt_param;
     if (path->normal.model_path == NULL)
     {
         *status = LIBMAIX_ERR_NOT_IMPLEMENT;
@@ -168,6 +169,7 @@ libmaix_err_t libmaix_nn_obj_load(struct libmaix_nn *obj, const libmaix_nn_model
 
 libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t *inputs, libmaix_nn_layer_t *outputs)
 {
+    // printf("[libmaix nn ]  forward\n");
     libmaix_err_t *status = &(((obj_config_t *)(obj->_config))->status);
     aipu_status_t ret;
 
@@ -195,7 +197,7 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
 
         if(inputs->buff_quantization == NULL )
         {
-            //  printf("[libmaix_nn] --  input has not init quantization buffer\n");
+             printf("[libmaix_nn] --  input has not init quantization buffer\n");
             uint8_t * pixels = (uint8_t *) inputs->data;  //  input data comes from camera data
             int8_t *quant_data = (int8_t *)malloc(sizeof(int8_t) * size);
             uint8_t R = ((obj_config_t *)(obj->_config))->opt->normal.mean[0];
@@ -355,7 +357,7 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
             {
                 // prediction[i] = data[i] / scale;
                 (*prediction) [i] = data[i] /scale;
- 
+
             }
         }
         else

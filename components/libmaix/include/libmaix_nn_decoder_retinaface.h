@@ -19,13 +19,16 @@ extern "C"
 #include "libmaix_err.h"
 #include "libmaix_nn_decoder.h"
 
-
 //R329
 // #define ANCHOR_SIZE_NUM 4
 // #define MIN_SIZE_LEN 10
+
+
 //V831
 #define ANCHOR_SIZE_NUM 3
 #define MIN_SIZE_LEN 6
+
+
 typedef struct
 {
     float x;
