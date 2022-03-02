@@ -140,7 +140,7 @@ void test_create()
     #endif
     #ifdef CONFIG_ARCH_R329
     test.input_h = 320 , test.input_w = 320;
-    test.model_path.normal.model_path = "/root/models/aipu_Retinaface_320.bin" ;
+    test.model_path.aipu.model_path = "/root/models/aipu_Retinaface_320.bin" ;
     #endif
 
   // create images

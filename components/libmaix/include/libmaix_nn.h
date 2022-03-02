@@ -46,7 +46,7 @@ typedef union
     {
         char* model_path;
         char* reserved;
-    }normal;
+    }aipu;
 }libmaix_nn_model_path_t;
 
 typedef struct
@@ -90,7 +90,7 @@ typedef union
         int*     output_ids;
         float    scale[5] ;
         bool encrypt;
-    }normal;
+    }aipu;
 }libmaix_nn_opt_param_t; // optional param for model
 
 

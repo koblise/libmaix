@@ -132,7 +132,7 @@ void nn_test(struct libmaix_disp* disp)
         #endif
         // R329
         #ifdef CONFIG_ARCH_R329
-         .normal.model_path = "/root/models/aipu_Retinaface_320.bin",
+         .aipu.model_path = "/root/models/aipu_Retinaface_320.bin",
         #endif
     };
     
@@ -241,13 +241,13 @@ void nn_test(struct libmaix_disp* disp)
 
     #ifdef CONFIG_ARCH_R329
     libmaix_nn_opt_param_t opt_param = {
-        .normal.input_names             = inputs_names,
-        .normal.output_names            = outputs_names,
-        .normal.input_num               = 1,              // len(input_names)
-        .normal.output_num              = 3,              // len(output_names)
-        .normal.mean                    = {104, 117, 123},
-        .normal.norm                    = {1, 1, 1},
-        .normal.scale                   = {32.752407 , 29.865177 , 14.620169},    //Only R329 has this option (r0p0 SDK)
+        .aipu.input_names             = inputs_names,
+        .aipu.output_names            = outputs_names,
+        .aipu.input_num               = 1,              // len(input_names)
+        .aipu.output_num              = 3,              // len(output_names)
+        .aipu.mean                    = {104, 117, 123},
+        .aipu.norm                    = {1, 1, 1},
+        .aipu.scale                   = {32.752407 , 29.865177 , 14.620169},    //Only R329 has this option (r0p0 SDK)
     };
     # endif
 

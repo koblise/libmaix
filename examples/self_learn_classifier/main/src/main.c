@@ -94,17 +94,17 @@ void nn_test(struct libmaix_disp* disp)
     libmaix_nn_model_path_t model_path = {
         // .awnn.param_path = "/home/model/resnet18_1000_awnn.param",
         // .awnn.bin_path = "/home/model/resnet18_1000_awnn.bin",
-        .normal.model_path = "/root/models/aipu_mobilenet2.bin"
+        .aipu.model_path = "/root/models/aipu_mobilenet2.bin"
     };
     char* inputs_names[] = {"input0"};
     char* outputs_names[] = {"output0"};
     libmaix_nn_opt_param_t opt_param = {
-        .normal.input_names = inputs_names,
-        .normal.output_names = outputs_names,
-        .normal.input_num = 1,  // len(input_names)
-        .normal.output_num = 1, // len(output_names)
-        .normal.mean = {127.5, 127.5, 127.5},
-        .normal.norm = {0.00784313725490196, 0.00784313725490196, 0.00784313725490196},
+        .aipu.input_names = inputs_names,
+        .aipu.output_names = outputs_names,
+        .aipu.input_num = 1,  // len(input_names)
+        .aipu.output_num = 1, // len(output_names)
+        .aipu.mean = {127.5, 127.5, 127.5},
+        .aipu.norm = {0.00784313725490196, 0.00784313725490196, 0.00784313725490196},
 
         // .awnn.input_names = inputs_names,
         // .awnn.output_names = outputs_names,

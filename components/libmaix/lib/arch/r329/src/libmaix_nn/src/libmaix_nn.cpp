@@ -111,13 +111,13 @@ libmaix_err_t libmaix_nn_obj_load(struct libmaix_nn *obj, const libmaix_nn_model
     ((obj_config_t *)(obj->_config))->opt = opt_param;
     ((obj_config_t *)(obj->_config))->opt = (libmaix_nn_opt_param_t *) malloc( sizeof(libmaix_nn_opt_param_t));
     *((obj_config_t *)(obj->_config))->opt   = * opt_param;
-    if (path->normal.model_path == NULL)
+    if (path->aipu.model_path == NULL)
     {
         *status = LIBMAIX_ERR_NOT_IMPLEMENT;
-        printf("[libmaix_nn]--  normal model can't be opened \n");
+        printf("[libmaix_nn]--  aipu model can't be opened \n");
     }
 
-    ret = AIPU_load_graph_helper(*ctx ,path->normal.model_path, gdesc_ptr);
+    ret = AIPU_load_graph_helper(*ctx ,path->aipu.model_path, gdesc_ptr);
     if (ret != AIPU_STATUS_SUCCESS)
     {
         *status = LIBMAIX_ERR_NOT_READY;
@@ -200,9 +200,9 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
              printf("[libmaix_nn] --  input has not init quantization buffer\n");
             uint8_t * pixels = (uint8_t *) inputs->data;  //  input data comes from camera data
             int8_t *quant_data = (int8_t *)malloc(sizeof(int8_t) * size);
-            uint8_t R = ((obj_config_t *)(obj->_config))->opt->normal.mean[0];
-            uint8_t G = ((obj_config_t *)(obj->_config))->opt->normal.mean[1];
-            uint8_t B = ((obj_config_t *)(obj->_config))->opt->normal.mean[2];
+            uint8_t R = ((obj_config_t *)(obj->_config))->opt->aipu.mean[0];
+            uint8_t G = ((obj_config_t *)(obj->_config))->opt->aipu.mean[1];
+            uint8_t B = ((obj_config_t *)(obj->_config))->opt->aipu.mean[2];
             for(int i=0 ; i != size ;i ++)
             {
                 quant_data[i *3 + 0] = pixels[i * 3 + 0] - R;
@@ -218,9 +218,9 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
         {
             //  printf("[libmaix_nn] --  input has  init quantization buffer\n");
             uint8_t * pixels = (uint8_t *) inputs->data;   
-            uint8_t R = ((obj_config_t *)(obj->_config))->opt->normal.mean[0];
-            uint8_t G = ((obj_config_t *)(obj->_config))->opt->normal.mean[1];
-            uint8_t B = ((obj_config_t *)(obj->_config))->opt->normal.mean[2];
+            uint8_t R = ((obj_config_t *)(obj->_config))->opt->aipu.mean[0];
+            uint8_t G = ((obj_config_t *)(obj->_config))->opt->aipu.mean[1];
+            uint8_t B = ((obj_config_t *)(obj->_config))->opt->aipu.mean[2];
             for(int i=0 ; i < size ;i++)
             {
                 temp_buffer[i *3 + 0] = pixels[i * 3+ 0] - R;
@@ -328,7 +328,7 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
 
     }
 
-    uint8_t output_num = ((obj_config_t *)(obj->_config))->opt->normal.output_num;
+    uint8_t output_num = ((obj_config_t *)(obj->_config))->opt->aipu.output_num;
     for (int out_id = 0 ; out_id < output_num ; out_id++)
     {
 
@@ -336,7 +336,7 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
 
         if(outputs[out_id].dtype == LIBMAIX_NN_DTYPE_FLOAT)
         {
-            float scale = ((obj_config_t *)(obj->_config))->opt->normal.scale[out_id];
+            float scale = ((obj_config_t *)(obj->_config))->opt->aipu.scale[out_id];
 
             // printf("[libmaix_nn ]dequantize scale :%f\n",scale);
 
@@ -357,7 +357,6 @@ libmaix_err_t libmaix_nn_obj_forward(struct libmaix_nn *obj, libmaix_nn_layer_t 
             {
                 // prediction[i] = data[i] / scale;
                 (*prediction) [i] = data[i] /scale;
-
             }
         }
         else

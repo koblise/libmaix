@@ -208,8 +208,8 @@ void nn_test(struct libmaix_disp* disp)
 #endif
     printf("--yolo init\n");
     libmaix_nn_model_path_t model_path = {
-        // .normal.model_path = "./model/aipu_yolo_VOC2007.bin",
-        .normal.model_path = "/root/models/aipu_onnx_cards_224_35.bin",
+        // .aipu.model_path = "./model/aipu_yolo_VOC2007.bin",
+        .aipu.model_path = "/root/models/aipu_onnx_cards_224_35.bin",
     };
     libmaix_nn_layer_t input = {
         .w = yolo2_config.net_in_width,
@@ -231,13 +231,13 @@ void nn_test(struct libmaix_disp* disp)
     char* outputs_names[] = {"output0"};
     // float Scale[] = {10.872787};
     libmaix_nn_opt_param_t opt_param = {
-        .normal.input_names             = inputs_names,
-        .normal.output_names            = outputs_names,
-        .normal.input_num               = 1,              // len(input_names)
-        .normal.output_num              = 1,              // len(output_names)
-        .normal.mean                    = {127, 127, 127},
-        .normal.norm                    = {0.0078125, 0.0078125, 0.0078125},
-        .normal.scale                   = {10.872787},    //Only R329 has this option (r0p0 SDK)
+        .aipu.input_names             = inputs_names,
+        .aipu.output_names            = outputs_names,
+        .aipu.input_num               = 1,              // len(input_names)
+        .aipu.output_num              = 1,              // len(output_names)
+        .aipu.mean                    = {127, 127, 127},
+        .aipu.norm                    = {0.0078125, 0.0078125, 0.0078125},
+        .aipu.scale                   = {10.872787},    //Only R329 has this option (r0p0 SDK)
     };
 
     // malloc buffer 
